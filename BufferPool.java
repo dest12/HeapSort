@@ -46,9 +46,9 @@ public class BufferPool
 
     // ----------------------------------------------------------
     /**
-     * Return a key 
-     * @param recNum
-     * @return
+     * Return a a short key value from the record at the specified position. 
+     * @param recNum the number of the record to get the key from
+     * @return the short that is thee key for the specified record
      */
     public short requestKey(long recNum) {
         BufferNode bn = bufferContains(recNum);
@@ -56,7 +56,11 @@ public class BufferPool
 
         return getKey(bn, recNum);
     }
-
+    /**
+     * Returns the node that contains the specified record.
+     * @param recNum the record number to search for
+     * @return the bufferNode the record is in, or null if it isn't found
+     */
     private BufferNode bufferContains(long recNum) {
         for(BufferNode bNode : bufferList) {
             if(bNode.getBlockID() <= recNum && bNode.getBlockID() + BUFFER_SIZE > recNum) {
@@ -69,7 +73,7 @@ public class BufferPool
 
     // ----------------------------------------------------------
     /**
-     * Place a description of your method here.
+     * Get the key short value from a buffer
      * @param bufferNum
      * @param recNum
      * @return
