@@ -70,6 +70,7 @@ public class BufferNode
     }
     // ----------------------------------------------------------
     /**
+     * Set the byte position from the file where the data in this node's buffer starts.
      * @param startReadingPosition the blockID to set
      */
     public void setBlockID(long startReadingPosition)

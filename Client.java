@@ -17,8 +17,19 @@ import java.io.FileWriter;
 
 
 public class Client
-{
+{   
+    //The buffer pool the heapsort algorithm will communicate with to sort the
+    //heap.
     private BufferPool buffPool;
+    /**
+     * Create a new Client to sort a binary file using a heapsort algorithm.
+     * Creates a buffer pool for the heapsorter to use when communicating with
+     * the file.  Stores statitics about the sorting in the specified stat file.
+     * @param fileName the name of the binary file to sort
+     * @param numBuffs the number of buffers to be used in the BufferPool
+     * @param pStatFile the name of the file where statistics about the sort
+     * will be saved
+     */
     public Client(String fileName, String numBuffs, String pStatFile)
     {
         File heapFile = new File(fileName);
@@ -32,7 +43,11 @@ public class Client
         writeStats(statFile, timeElapsed);
 
     }
-
+    /**
+     * Write the stats from the heapsort to the statFile.
+     * @param statFile the name of the file where stats are to be written
+     * @param timeElapsed the amount of time it took to sort the file.
+     */
     private void writeStats(File statFile, long timeElapsed)
     {
         try{
