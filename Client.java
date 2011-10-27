@@ -17,7 +17,7 @@ import java.io.FileWriter;
 
 
 public class Client
-{   
+{
     //The buffer pool the heapsort algorithm will communicate with to sort the
     //heap.
     private BufferPool buffPool;
@@ -37,25 +37,36 @@ public class Client
         File statFile = new File(pStatFile);
         MaxHeap heapSorter = new MaxHeap(buffPool, heapFile.length() / 4);
         long startTime = System.currentTimeMillis();
-        //heapSorter.heapsort();
+        heapSorter.heapsort();
+        buffPool.flush();
         long timeElapsed = System.currentTimeMillis() - startTime;
 
-        writeStats(statFile, timeElapsed);
-
+        writeStats(statFile, timeElapsed, fileName, buffPool);
+        buffPool.print();
     }
     /**
      * Write the stats from the heapsort to the statFile.
      * @param statFile the name of the file where stats are to be written
      * @param timeElapsed the amount of time it took to sort the file.
      */
-    private void writeStats(File statFile, long timeElapsed)
+    private void writeStats(File statFile, long timeElapsed, String fileName,BufferPool buffPool)
     {
         try{
             // Create file
-            FileWriter fstream = new FileWriter(statFile);
+            FileWriter fstream = new FileWriter(statFile, true);
             BufferedWriter out = new BufferedWriter(fstream);
-            out.append("ALL THE CRAP IN BUFFERPOOL");
-            out.append("\nHeapsort completed in "+timeElapsed+" ms.");
+            out.append("Reading data file '"+fileName+"'");
+            out.newLine();
+            out.append("Cache Misses:"+buffPool.getCacheMisses());
+            out.newLine();
+            out.append("Cache Hits:"+buffPool.getCacheHits());
+            out.newLine();
+            out.append("Disk Reads:"+buffPool.getDiskReads());
+            out.newLine();
+            out.append("Disk Writes: "+buffPool.getDiskWrites());
+            out.newLine();
+            out.append("Heapsort completed in "+timeElapsed+" ms.");
+            out.newLine();
 
             //Close the output stream
             out.close();

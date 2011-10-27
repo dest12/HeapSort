@@ -1,3 +1,5 @@
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.File;
@@ -19,9 +21,22 @@ public class BufferPool
     private int numBuffers;
     //the binary file that the bufferpool interfaces with
     private RandomAccessFile myFile;
-    //A constant to represent data not being found in a current buffer
-    private static final int BUFFER_NOT_FOUND = -1;
-    //A constant for the number of bytes a buffer can hold
+
+    //number of cache hits
+    private int cacheHits = 0;
+
+    //number of cache misses
+    private int cacheMisses = 0;
+
+     //number of disk reads
+    private int diskReads = 0;
+
+     //number of disk writes
+    private int diskWrites = 0;
+
+    /**
+     * A constant for the number of bytes a buffer can hold
+     */
     public static final int BUFFER_SIZE = 4096;
     /**
      * Create a new BufferPool with the specified number of buffers.
@@ -46,7 +61,7 @@ public class BufferPool
 
     // ----------------------------------------------------------
     /**
-     * Return a a short key value from the record at the specified position. 
+     * Return a a short key value from the record at the specified position.
      * @param recNum the number of the record to get the key from
      * @return the short that is thee key for the specified record
      */
@@ -63,11 +78,12 @@ public class BufferPool
      */
     private BufferNode bufferContains(long recNum) {
         for(BufferNode bNode : bufferList) {
-            if(bNode.getBlockID() <= recNum && bNode.getBlockID() + BUFFER_SIZE > recNum) {
+            if(bNode.getBlockID() <= recNum*4 && bNode.getBlockID() + BUFFER_SIZE > recNum*4) {
+                cacheHits++;
                 return bNode;
             }
         }
-
+        cacheMisses++;
         return null;
     }
 
@@ -103,7 +119,7 @@ public class BufferPool
         currentNode = new BufferNode();
 
 
-        long startReadingPosition = (recNum / 4096);
+        long startReadingPosition = ((recNum * 4 )/ 4096); //truncate
         startReadingPosition *= 4096;
 
         currentNode.setBlockID(startReadingPosition);
@@ -112,6 +128,7 @@ public class BufferPool
         {
             myFile.seek(startReadingPosition);
             myFile.read(currentNode.getBuffer().getData());
+            diskReads++;
         }
         catch (IOException e)
         {
@@ -133,6 +150,7 @@ public class BufferPool
         {
             myFile.seek(writeNode.getBlockID());
             myFile.write(writeNode.getBuffer().getData());
+            diskWrites++;
         }
         catch (IOException e)
         {
@@ -141,10 +159,78 @@ public class BufferPool
         }
     }
 
-    public Object getKey(long j)
+    public void setRecord(long recordNum, byte[] data)
     {
-        // TODO Auto-generated method stub
-        return null;
+        BufferNode node = bufferContains(recordNum);
+        if (node == null)
+            node = bufferRead(recordNum);
+        node.getBuffer().setRecord((int)(recordNum * 4 - node.getBlockID()), data);
+        node.setChanged(true);
+    }
+
+    public byte[] getRecord(long recordNum)
+    {
+        BufferNode node = bufferContains(recordNum);
+        if (node == null)
+            node = bufferRead(recordNum);
+        return node.getBuffer().getRecord((int)(recordNum * 4 - node.getBlockID()));
+    }
+
+    public void flush()
+    {
+        for(BufferNode bNode : bufferList) {
+            if(bNode.isChanged())
+            {
+                writeToFile(bNode);
+                bNode.setChanged(false);
+            }
+        }
+    }
+
+    public void print()
+    {
+        try
+        {
+            int count = 0;
+            for(long i=0; i*4<myFile.length() - 4095; i+=1024)
+            {
+                byte[] record = getRecord(i);
+                count++;
+                System.out.print(makeShort(record[0],record[1]) + "\t" +
+                    makeShort(record[2], record[3]) + "\t");
+                if(count%8 == 0)
+                    System.out.print("\n");
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.println("File Read Error");
+            e.printStackTrace();
+        }
+    }
+
+    public short makeShort(byte one, byte two)
+    {
+        ByteBuffer bb = ByteBuffer.allocate(2);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
+        bb.put(one);
+        bb.put(two);
+        short shortVal = bb.getShort(0);
+        return shortVal;
+    }
+
+    public int getCacheMisses() {
+        return cacheMisses;
+    }
+    public int getCacheHits() {
+        return cacheHits;
+    }
+
+    public int getDiskReads() {
+        return diskReads;
+    }
+    public int getDiskWrites() {
+        return diskWrites;
     }
 
 }

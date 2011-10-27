@@ -1,11 +1,13 @@
 
 public class MaxHeap {
     private long n;       // # of things in heap
+    private long size;
     private BufferPool buffPool;
 
     public MaxHeap(BufferPool buffPool, long size) {
         this.buffPool = buffPool;
         n = size;
+        this.size = size;
         buildheap();
     }
 
@@ -40,41 +42,46 @@ public class MaxHeap {
         while (!isLeaf(i)) {
             long j = leftchild(i);
             if ((j<(n-1)) &&
-                (buffPool.getKey(j).compareTo(Heap[j+1]) < 0))
+                (buffPool.requestKey(j) < buffPool.requestKey(j + 1)))
                 j++; // index of child w/ greater value
-            if (Heap[i].compareTo(Heap[j]) >= 0)
+            if (buffPool.requestKey(i) >= (buffPool.requestKey(j)))
                 return;
-            DSutil.swap(Heap, i, j);
+            swap(i, j);
             i = j;  // Move down
         }
     }
 
-    public E removemax() {
-        assert n > 0 : "Removing from empty heap";
-        DSutil.swap(Heap, 0, --n);
-        if (n != 0) siftdown(0);
-        return Heap[n];
+    private void swap(long recNum1, long recNum2)
+    {
+        byte[] temp = buffPool.getRecord(recNum1);
+        buffPool.setRecord(recNum1, buffPool.getRecord(recNum2));
+        buffPool.setRecord(recNum2, temp);
     }
 
-    public void insert(E val) {
+    public byte[] removemax() {
+        assert n > 0 : "Removing from empty heap";
+        swap(0, --n);
+        if (n != 0) siftdown(0);
+        return buffPool.getRecord(n);
+    }
+
+    public void insert(byte[] val) {
         assert n < size : "Heap is full";
-        int curr = n++;
-        Heap[curr] = val;
+        long curr = n++;
+        buffPool.setRecord(curr, val);
         // Siftup until curr parent's key > curr key
         while ((curr != 0)  &&
-            (Heap[curr].compareTo(Heap[parent(curr)])
-                > 0)) {
-            DSutil.swap(Heap, curr, parent(curr));
+            (buffPool.requestKey(curr) > (buffPool.requestKey(parent(curr)))
+                )) {
+            swap(curr, parent(curr));
             curr = parent(curr);
         }
     }
 
-    static <E extends Comparable<? super E>>
-    void heapsort(E[] A) { // Heapsort
-      MaxHeap<E> H = new MaxHeap<E>(A, A.length,
-                                       A.length);
-      for (int i=0; i<A.length; i++)  // Now sort
-        H.removemax(); // Put max at end of heap
+
+    public void heapsort() {
+      for (int i=0; i<size; i++)  // Now sort
+          this.removemax(); // Put max at end of heap
     }
 
 

@@ -9,7 +9,7 @@ public class Buffer
 {
     //the byte array that stores the bytes in this buffer
     private byte[] data;
-    
+
     public Buffer()
     {
         data = new byte[BufferPool.BUFFER_SIZE];
@@ -32,6 +32,21 @@ public class Buffer
     public void setData(byte[] data)
     {
         this.data = data;
+    }
+
+    public void setRecord(int pos, byte[] newData)
+    {
+        for(int i = 0; i < newData.length; i++)
+        {
+            data[i + pos] = newData[i];
+        }
+    }
+
+    public byte[] getRecord(int pos)
+    {
+        byte[] record = new byte[4];
+        System.arraycopy(data, pos, record, 0, 4);
+        return record;
     }
 
     /**
