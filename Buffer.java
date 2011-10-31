@@ -9,7 +9,9 @@ public class Buffer
 {
     //the byte array that stores the bytes in this buffer
     private byte[] data;
-
+    /**
+     * Create a new Buffer, initializeing the data array.
+     */
     public Buffer()
     {
         data = new byte[BufferPool.BUFFER_SIZE];
@@ -33,7 +35,13 @@ public class Buffer
     {
         this.data = data;
     }
-
+    /**
+     * Set the bytes in the data array to be the bytes in the newData array,
+     * starting at the indicated position.  pos + newData.length should not be
+     * greater than data.length.
+     * @param pos the position to start overwriting bytes at
+     * @param newData the byte array containing the bytes to be copied
+     */
     public void setRecord(int pos, byte[] newData)
     {
         for(int i = 0; i < newData.length; i++)
@@ -41,7 +49,11 @@ public class Buffer
             data[i + pos] = newData[i];
         }
     }
-
+    /**
+     * Return a record made up of a 2 byte key and 2 byte value.
+     * @param pos the byte position where the record starts
+     * @return the record
+     */
     public byte[] getRecord(int pos)
     {
         byte[] record = new byte[4];

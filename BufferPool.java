@@ -90,9 +90,10 @@ public class BufferPool
     // ----------------------------------------------------------
     /**
      * Get the key short value from a buffer
-     * @param bufferNum
-     * @param recNum
-     * @return
+     * @param pNode the BufferNode containing the key.
+     * @param recNum the record number to get the key from.
+     * recNum must be less than BUFFER_SIZE / 4
+     * @return the short value of the key
      */
     public short getKey(BufferNode pNode, long recNum)
     {
@@ -101,12 +102,18 @@ public class BufferPool
         long pos = recNum * 4 - pNode.getBlockID();
         return pNode.getBuffer().getShort((int)pos);
     }
-
+    /**
+     * Read a block of data into a buffer.  If the buffer pool is full,
+     * overwrite the least recently used buffer, writing its contents if they've
+     * been changed.
+     * @param recNum the record number whose block is to be read
+     * @return the BufferNode containing the buffer that just read in the data.
+     */
     private BufferNode bufferRead(long recNum) {
         BufferNode currentNode;
 
 
-        // our bufferPool is full, so overwrite an existing buffer
+        // if our bufferPool is full, overwrite an existing buffer
         if(bufferList.size() >= numBuffers) {
             currentNode= bufferList.getLast();
             //if a buffer was changed, we need to write it back to the file
@@ -123,7 +130,7 @@ public class BufferPool
         startReadingPosition *= 4096;
 
         currentNode.setBlockID(startReadingPosition);
-
+        //seek to and read the data
         try
         {
             myFile.seek(startReadingPosition);
@@ -144,7 +151,10 @@ public class BufferPool
         bufferList.indexOf(currentNode);
         return currentNode;
     }
-
+    /**
+     * Write the data in the specified buffer to the file.
+     * @param writeNode the node containing the buffer to be written
+     */
     private void writeToFile(BufferNode writeNode) {
         try
         {
@@ -158,7 +168,13 @@ public class BufferPool
             e.printStackTrace();
         }
     }
-
+    /**
+     * Set the specified record to be the new byte data.
+     * the new data should be an array of 4 bytes.  If the record isn't already
+     * in a buffer, read it in.
+     * @param recordNum the record number to overwrite
+     * @param data the new byte data to set the record to
+     */
     public void setRecord(long recordNum, byte[] data)
     {
         BufferNode node = bufferContains(recordNum);
@@ -167,7 +183,11 @@ public class BufferPool
         node.getBuffer().setRecord((int)(recordNum * 4 - node.getBlockID()), data);
         node.setChanged(true);
     }
-
+    /**
+     * Return a byte array containing the specifed record.  If the record isn't
+     * already in a buffer pool, read it in.
+     * @return the byte array containing the record.
+     */
     public byte[] getRecord(long recordNum)
     {
         BufferNode node = bufferContains(recordNum);
@@ -175,7 +195,9 @@ public class BufferPool
             node = bufferRead(recordNum);
         return node.getBuffer().getRecord((int)(recordNum * 4 - node.getBlockID()));
     }
-
+    /**
+     * Write the contents of all buffers to the file.
+     */
     public void flush()
     {
         for(BufferNode bNode : bufferList) {
@@ -186,7 +208,11 @@ public class BufferPool
             }
         }
     }
-
+    /**
+     * Print out the first record from each block of BUFFER_SIZE.  Print the
+     * records 8 to a line, keys and values separated by spaces, and formatted
+     * into columns.
+     */
     public void print()
     {
         try
@@ -208,7 +234,10 @@ public class BufferPool
             e.printStackTrace();
         }
     }
-
+    /**
+     * Return a short value from two bytes.
+     * @return the short value
+     */
     public short makeShort(byte one, byte two)
     {
         ByteBuffer bb = ByteBuffer.allocate(2);
@@ -218,17 +247,31 @@ public class BufferPool
         short shortVal = bb.getShort(0);
         return shortVal;
     }
-
+    /**
+     * Return the number of cache misses.
+     * @return cache misses
+     */
     public int getCacheMisses() {
         return cacheMisses;
     }
+    /**
+     * Return the nuber of cache hits.
+     * @return the number of cache hits
+     */
     public int getCacheHits() {
         return cacheHits;
     }
-
+    /**
+     * Return the number of disk reads.
+     * @return disk reads
+     */
     public int getDiskReads() {
         return diskReads;
     }
+    /**
+     * Return the number of disk writes
+     * @return disk writes
+     */
     public int getDiskWrites() {
         return diskWrites;
     }

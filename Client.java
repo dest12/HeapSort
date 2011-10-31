@@ -48,13 +48,16 @@ public class Client
      * Write the stats from the heapsort to the statFile.
      * @param statFile the name of the file where stats are to be written
      * @param timeElapsed the amount of time it took to sort the file.
+     * @param fileName the name of the stat file
+     * @param buffPool the bufferPool whose stats are to be printed
      */
-    private void writeStats(File statFile, long timeElapsed, String fileName,BufferPool buffPool)
+    private void writeStats(File statFile, long timeElapsed, String fileName, BufferPool buffPool)
     {
         try{
             // Create file
             FileWriter fstream = new FileWriter(statFile, true);
             BufferedWriter out = new BufferedWriter(fstream);
+            //get and print stats
             out.append("Reading data file '"+fileName+"'");
             out.newLine();
             out.append("Cache Misses:"+buffPool.getCacheMisses());
