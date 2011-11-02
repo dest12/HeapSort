@@ -22,12 +22,13 @@ public class MaxHeap {
     }
     /**
      * Return the size of the heap.
+     * @return the number of elements in the heap
      */
     public long heapsize() {
         return n;
     }
     /**
-     * Return whether or not the element at the givem position is a leaf.
+     * Return whether or not the element at the given position is a leaf.
      * @param i the element to check
      * @return whether the element is a leaf
      */
@@ -36,7 +37,7 @@ public class MaxHeap {
     }
     /**
      * Return the position of element's left child
-     * @param i the postiopn of the element whose left child is to be returned
+     * @param i the position of the element whose left child is to be returned
      * @return the position of the left child
      * @precondition the element has a left child
      */
@@ -44,9 +45,9 @@ public class MaxHeap {
         assert i < n/2 : "Position has no left child";
         return 2*i + 1;
     }
-    /** 
+    /**
      * Return the position of element's right child
-     * @param i the postiopn of the element whose right child is to be returned
+     * @param pos the position of the element whose right child is to be returned
      * @return the position of the right child
      * @precondition the element has a right child
      */
@@ -54,9 +55,9 @@ public class MaxHeap {
         assert pos < (n-1)/2 : "Position has no right child";
         return 2*pos + 2;
     }
-    /** 
+    /**
      * Return the position of element's parent
-     * @param i the postiopn of the element whose parent is to be returned
+     * @param pos the position of the element whose parent is to be returned
      * @return the position of the parent
      * @precondition the element has a parent
      */
@@ -91,7 +92,7 @@ public class MaxHeap {
         }
     }
     /**
-     * Swap two elements inthe MaxHeap.
+     * Swap two elements in the MaxHeap.
      * @param recNum1 the position of the first element to swap
      * @param recNum2 the position of the second element to swap
      */

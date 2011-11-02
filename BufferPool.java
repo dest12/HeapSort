@@ -186,6 +186,7 @@ public class BufferPool
     /**
      * Return a byte array containing the specifed record.  If the record isn't
      * already in a buffer pool, read it in.
+     * @param recordNum the number of the record to retrieve
      * @return the byte array containing the record.
      */
     public byte[] getRecord(long recordNum)
@@ -236,12 +237,14 @@ public class BufferPool
     }
     /**
      * Return a short value from two bytes.
+     * @param one the first byte
+     * @param two the second byte
      * @return the short value
      */
     public short makeShort(byte one, byte two)
     {
         ByteBuffer bb = ByteBuffer.allocate(2);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
+        bb.order(ByteOrder.BIG_ENDIAN);
         bb.put(one);
         bb.put(two);
         short shortVal = bb.getShort(0);

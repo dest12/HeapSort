@@ -10,7 +10,7 @@ public class Buffer
     //the byte array that stores the bytes in this buffer
     private byte[] data;
     /**
-     * Create a new Buffer, initializeing the data array.
+     * Create a new Buffer, initializing the data array.
      */
     public Buffer()
     {
@@ -70,10 +70,12 @@ public class Buffer
     public short getShort(int pos)
     {
         ByteBuffer bb = ByteBuffer.allocate(2);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
+        bb.order(ByteOrder.BIG_ENDIAN);
         bb.put(data[pos]);
         bb.put(data[pos+1]);
         short shortVal = bb.getShort(0);
+        if (shortVal < 0)
+            System.out.println("Short was negative: " + shortVal);
         return shortVal;
     }
 }

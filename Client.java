@@ -18,9 +18,7 @@ import java.io.FileWriter;
 
 public class Client
 {
-    //The buffer pool the heapsort algorithm will communicate with to sort the
-    //heap.
-    private BufferPool buffPool;
+
     /**
      * Create a new Client to sort a binary file using a heapsort algorithm.
      * Creates a buffer pool for the heapsorter to use when communicating with
@@ -33,7 +31,7 @@ public class Client
     public Client(String fileName, String numBuffs, String pStatFile)
     {
         File heapFile = new File(fileName);
-        buffPool = new BufferPool(Integer.parseInt(numBuffs), heapFile);
+        BufferPool buffPool = new BufferPool(Integer.parseInt(numBuffs), heapFile);
         File statFile = new File(pStatFile);
         MaxHeap heapSorter = new MaxHeap(buffPool, heapFile.length() / 4);
         long startTime = System.currentTimeMillis();
