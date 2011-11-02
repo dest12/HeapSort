@@ -11,8 +11,9 @@ import java.io.FileWriter;
  *  sorting took in the stat file. The client then writes the stats from
  *  the BufferPool to the stat file.
  *
- *  @author Josh Rush, Ben Roble
- *  @version Oct 23, 2011
+ *  @author Joshua Rush (jdrush89)
+ *  @author Benjamin Roble (broble)
+ *  @version Nov 2, 2011
  */
 
 

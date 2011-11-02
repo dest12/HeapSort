@@ -12,6 +12,9 @@ import java.util.LinkedList;
  * pull a block of data from the file into an empty buffer, or overrite the data
  * in the least recently used buffer (writing it's contents to the file if
  * they've been changed).
+ *  @author Joshua Rush (jdrush89)
+ *  @author Benjamin Roble (broble)
+ *  @version Nov 2, 2011
  */
 public class BufferPool
 {

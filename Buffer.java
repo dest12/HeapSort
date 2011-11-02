@@ -4,6 +4,9 @@ import java.nio.ByteOrder;
 /**
  * A Buffer that stores bytes in a byte array.  The array and individual shorts
  * can be retrieved and set.
+ *  @author Joshua Rush (jdrush89)
+ *  @author Benjamin Roble (broble)
+ *  @version Nov 2, 2011
  */
 public class Buffer
 {

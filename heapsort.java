@@ -1,9 +1,23 @@
+//Compiled using Eclipse Java compiler on a Windows 7 64-bit machine.
+//Date completed: 11/2/11
+//Sorts a file containing 2 byte keys and records.  The file is sorted using
+//a heapsort algorithm.  The heapsort accesses the file through a buffer pool.
+//Statistics about the sort and buffer pool performance are reported in a specified
+//stat file.
+
+
+
 /**
  * Initializes a client that executes a heapsort algorithm on a binary file.
  * The heapsort interfaces with the file through a buffer pool.  The
  * client then writes stats to a stat file about the bufferpool and
  * sorting performance.
+ *
+ *  @author Joshua Rush (jdrush89)
+ *  @author Benjamin Roble (broble)
+ *  @version Nov 2, 2011
  */
+
 
 // On my honor:
 //
@@ -29,7 +43,7 @@ public class heapsort
 {
     /**
      * Initializes the client that will sort a binary file using a heapsort
-     * algorithm.  The heapsorter will communicate with the file through a 
+     * algorithm.  The heapsorter will communicate with the file through a
      * buffer pool.  Statistcs about the sorting will be output to the specified
      * stat file.
      * @param args the string arguments for running the program

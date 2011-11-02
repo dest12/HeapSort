@@ -3,6 +3,9 @@
  * than its parent.  Given a set of data, the max heap can heapify the contents,
  * then sort it by continually removing the root.  The max heap accesses the
  * data through a BufferPool.
+ *  @author Joshua Rush (jdrush89)
+ *  @author Benjamin Roble (broble)
+ *  @version Nov 2, 2011
  */
 public class MaxHeap {
     private long n;       // # of things in heap
@@ -70,7 +73,12 @@ public class MaxHeap {
      * nodes.
      */
     public void buildheap()
-    { for (long i=n/2-1; i>=0; i--) siftdown(i); }
+    {
+        for (long i=n/2-1; i>=0; i--)
+        {
+            siftdown(i);
+        }
+    }
 
     /**
      * Sift an element down, swapping it with its largest child until it is

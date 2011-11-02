@@ -1,6 +1,9 @@
 /**
  * A node in a linked list that references a buffer, it's position in the file,
  * and whether it has been changed or not.
+ *  @author Joshua Rush (jdrush89)
+ *  @author Benjamin Roble (broble)
+ *  @version Nov 2, 2011
  */
 public class BufferNode
 {
